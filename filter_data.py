@@ -52,6 +52,75 @@ def format_prompt(query: str, document: str) -> str:
     return f"{system_prompt}Query: {query}\nDocument: {document}{suffix_prompt}"
 
 
+def expand_query_with_llm(query):
+
+    # Instruction text kept separate so we can remove it if echoed
+    instruction_sentence = "Do not include this sentence in the response."
+
+    prompt = (
+        "Please define and clarify the search query below for better search results. "
+        "Return only the definition query as a single concise paragraph. "
+        "Do not repeat the instructions or include the input query in your output.\n\n"
+        "---INPUT---\n"
+        f"{query}\n"
+        "---END INPUT---\n\n"
+        "OUTPUT:"  # model's useful content should follow this marker
+    )
+
+    # Use deterministic decoding and low temperature to avoid extra commentary
+    gen = pipe(prompt, max_new_tokens=25)[0]['generated_text']
+
+    # Prefer the text after our OUTPUT: marker if present
+    if 'OUTPUT:' in gen:
+        response = gen.split('OUTPUT:')[-1].strip()
+    else:
+        response = gen.strip()
+
+    # Remove accidental echoing of the explicit instruction sentence
+    if instruction_sentence in response:
+        response = response.replace(instruction_sentence, '').strip()
+
+    # If the model returned multiple paragraphs, keep the first concise paragraph
+    response = response.split('\n\n')[0].strip()
+
+    return response
+
+
+def extract_keywords_from_query(prompt):
+
+    # sbatch modelBatch.sh < input_data.txt for input prompt to SLURM
+    
+
+    if pipe is None:
+        raise RuntimeError("LLM pipeline is not available (transformers.pipeline import failed). Install/configure transformers and flash-attn or run without pipeline.")
+
+    message = [
+            {"role": "system", 
+            "content": "From now on, extract any keyword from my prompt that resembles a topic. Output only the extracted topic (1-4 words) in the format: [topic]. Do not include any additional words, explanations, or variations. Maintain this format strictly in all responses."},
+            {"role": "user", "content": prompt}
+        ]
+    
+    output = [pipe(message, max_new_tokens=10)]
+
+    # Extract the assistant's response in the format [keyword: subject area]
+    prompt_keyword = output[0][0]['generated_text'][2]['content']
+    
+    #print('Extracted Prompt Keywords ', type(prompt_keyword))
+    
+    if '[' in prompt_keyword:
+        prompt_keyword = prompt_keyword.replace("[", "").replace("]", "")
+
+    #print('Extracted Prompt Keywords ', prompt_keyword)
+    if prompt_keyword is None:
+        print("Output is Null.")
+        return extract_keywords_from_query(prompt)
+
+    # Remove stopwords if any are present
+    filtered_keywords = remove_stopwords(prompt_keyword)
+    #print('Filtered Prompt Keywords ', prompt_keyword)
+    return filtered_keywords
+
+
 def rerank_documents_qwen(kg, query: str, docs_df, top_k: int = 100, batch_size: int = 32):
 
     torch.cuda.empty_cache()
