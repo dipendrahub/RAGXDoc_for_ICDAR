@@ -122,11 +122,7 @@ def rerank_documents_qwen(kg, query: str, docs_df, top_k: int = 100, batch_size:
         inputs = reranker_tokenizer(prompts, return_tensors="pt", padding=True, truncation=True, max_length=256).to(device)
         
         # Decode the FULL tokenized input to see exactly what the model sees
-        # first_prompt_full = reranker_tokenizer.decode(inputs['input_ids'][0], skip_special_tokens=False)
-
-        # print("\n=== EXACTLY WHAT THE MODEL SEES (AFTER TRUNCATION) ===")
-        # print(first_prompt_full)
-        # print("\n=== END OF INPUT ===")
+        # first_prompt_full = reranker_tokenizer.decode(inputs['input_ids'][0], skip_special_tokens=False
         # print(f"\nTotal tokens used: {inputs['input_ids'].shape[1]}/512")
 
         with torch.no_grad():
