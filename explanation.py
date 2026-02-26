@@ -22,7 +22,7 @@ class ExplainableReranker:
             torch_dtype=torch.float16,
             device_map="auto"
         )
-        print("✓ Model loaded!")
+        print("Model loaded!")
     
     def generate_explanation_and_rerank(self, query: str, paper_id: str, title: str, 
                                        abstract: str, subgraph: str, preranker_score: float) -> dict:
@@ -208,9 +208,7 @@ Your response:"""
         """
         results = []
         
-        print(f"\n{'='*80}")
         print(f"LLM RERANKING WITH EXPLANATIONS")
-        print(f"{'='*80}")
         print(f"Query: {query}")
         print(f"Processing top {top_k} papers from pre-ranker...\n")
         
@@ -249,9 +247,7 @@ Your response:"""
         reranked_df = reranked_df.sort_values('final_rank_score', ascending=False).reset_index(drop=True)
         
         # Print summary
-        print(f"\n{'='*80}")
         print(f"RERANKING SUMMARY")
-        print(f"{'='*80}")
         
         yes_high = len(reranked_df[(reranked_df['explanation'].apply(lambda x: x['relevance']) == 'yes') & 
                                    (reranked_df['explanation'].apply(lambda x: x['confidence']) == 'high')])
