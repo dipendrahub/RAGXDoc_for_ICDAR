@@ -1,0 +1,51 @@
+Particle physics
+Psychology
+Cluster analysis
+Database
+Image processing
+Information retrieval
+Computer vision
+Probability distribution
+Image segmentation
+Feature extraction
+Mathematical optimization
+Speech recognition
+Discrete mathematics
+Graph theory
+Time complexity
+Statistical inference
+Game theory
+DNA synthesis
+Bioinformatics
+Tumour classification
+Speech processing
+Bayesian statistics
+Novelty detection
+Kernel density estimation
+Gibbs sampling
+Parallel algorithm
+Learning to rank
+Knowledge extraction
+Monte Carlo method
+Belief propagation
+Computational biology
+Activity recognition
+Dimensionality reduction
+Wavelet transform
+Ensemble learning
+k-nearest neighbors algorithm
+Topic model
+Hierarchical clustering
+Automatic text summarization
+Dynamic programming
+Latent Dirichlet allocation
+Entity linking
+Random forest
+Multi-task learning
+Cloud computing
+Semantic Web
+Fuzzy logic
+Generative model
+Support vector machine
+Biochemistry
+
